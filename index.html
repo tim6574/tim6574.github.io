@@ -6,61 +6,110 @@
     <title>timothyandkyler.devs.surf</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
+        :root {
+            --bg-color: #fafafa;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --btn-bg: #ffffff;
+            --btn-border: #e5e7eb;
+            --btn-hover: #f9fafb;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            text-align: center;
+            padding: 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
         }
         h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-main);
         }
         p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 40px;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin: 0 0 3rem 0;
+            font-weight: 400;
         }
-        .button-container {
+        .button-grid {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .btn {
-            background-color: #3498db;
-            color: white;
-            padding: 12px 24px;
+            background-color: var(--btn-bg);
+            color: var(--text-main);
+            border: 1px solid var(--btn-border);
+            padding: 0.875rem 1.75rem;
+            border-radius: 99px; /* Pill shape */
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .btn:hover {
-            background-color: #2980b9;
+            background-color: var(--btn-hover);
+            border-color: #d1d5db;
             transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        /* Subtle colored dots for the apps based on your favicons */
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-friendmail { background-color: #3b82f6; } /* Blue */
+        .dot-secret { background-color: #ec4899; } /* Pink */
+        .dot-podcast { background-color: #38bdf8; } /* Light Blue */
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <h1>timothyandkyler.devs.surf</h1>
-    <p>the websight for goats</p>
-    
-    <div class="button-container">
-        <a href="/secret-webpage" class="btn">Secret Webpage</a>
-        <a href="/podcast" class="btn">Podcast</a>
-        <a href="/email" class="btn">Email</a>
+    <div class="container">
+        <h1>timothyandkyler.devs.surf</h1>
+        <p>the websight for goats</p>
+        
+        <div class="button-grid">
+            <a href="/email" class="btn">
+                <span class="dot dot-friendmail"></span>
+                FriendMail
+            </a>
+            <a href="/podcast" class="btn">
+                <span class="dot dot-podcast"></span>
+                PodCastaway
+            </a>
+            <a href="/secret-webpage" class="btn">
+                <span class="dot dot-secret"></span>
+                Secret Room Chat
+            </a>
+        </div>
     </div>
 </body>
 </html>
