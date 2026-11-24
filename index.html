@@ -1,572 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#fafafa">
-    <title>timothyandkyler.devs.surf</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <script>
-        // Use each visitor's local time: day from 7 AM to 7 PM.
-        function updateTheme() {
-            const hour = new Date().getHours();
-            const theme = hour >= 7 && hour < 19 ? 'day' : 'night';
-            const previousTheme = document.documentElement.dataset.theme;
-            document.documentElement.dataset.theme = theme;
-            document.querySelector('meta[name="theme-color"]')
-                .setAttribute('content', theme === 'day' ? '#fafafa' : '#080d19');
-
-            if (previousTheme !== theme) {
-                document.dispatchEvent(new Event('themechange'));
-            }
-        }
-
-        updateTheme(); // Apply before the page renders to avoid a theme flash.
-        setInterval(updateTheme, 30 * 1000);
-
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) updateTheme();
-        });
-    </script>
-    <style>
-        :root {
-            color-scheme: light;
-            --bg-color: #fafafa;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --btn-bg: #ffffff;
-            --btn-border: #e5e7eb;
-            --btn-hover: #f9fafb;
-        }
-
-        :root[data-theme="night"] {
-            color-scheme: dark;
-            --bg-color: #080d19;
-            --text-main: #edf4ff;
-            --text-muted: #8d9bb2;
-            --btn-bg: rgba(16, 27, 45, 0.72);
-            --btn-border: rgba(145, 178, 215, 0.19);
-            --btn-hover: rgba(24, 42, 66, 0.86);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            min-height: 100svh;
-            text-align: center;
-            padding: 2rem;
-            -webkit-font-smoothing: antialiased;
-            position: relative;
-            isolation: isolate;
-            overflow-x: hidden;
-        }
-
-        /* The subtle grid/glow appears only at night. */
-        :root[data-theme="night"] body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            pointer-events: none;
-            background:
-                radial-gradient(
-                    ellipse 45% 40% at 50% 43%,
-                    rgba(37, 97, 159, 0.20),
-                    transparent 85%
-                ),
-                radial-gradient(
-                    circle at 88% 12%,
-                    rgba(82, 55, 135, 0.10),
-                    transparent 40%
-                ),
-                linear-gradient(
-                    rgba(128, 178, 232, 0.045) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(128, 178, 232, 0.045) 1px,
-                    transparent 1px
-                );
-            background-size: auto, auto, 42px 42px, 42px 42px;
-        }
-
-        :root[data-theme="night"] body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-            background: radial-gradient(
-                ellipse at center,
-                transparent 24%,
-                rgba(4, 8, 17, 0.56) 100%
-            );
-        }
-
-        .container {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            z-index: 1;
-            animation: fadeIn 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        h1 {
-            font-size: clamp(1.85rem, 5vw, 2.75rem);
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            margin: 0 0 0.5rem 0;
-            color: var(--text-main);
-            overflow-wrap: anywhere;
-        }
-
-        p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            margin: 0 0 3rem 0;
-            font-weight: 400;
-        }
-
-        .button-grid {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background-color: var(--btn-bg);
-            color: var(--text-main);
-            border: 1px solid var(--btn-border);
-            padding: 0.875rem 1.75rem;
-            border-radius: 99px;
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            transition:
-                background 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background-color: var(--btn-hover);
-            border-color: #d1d5db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn:focus-visible {
-            outline: 2px solid #3b82f6;
-            outline-offset: 4px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-
-        .dot-friendmail {
-            background-color: #3b82f6;
-        }
-
-        .dot-secret {
-            background-color: #ec4899;
-        }
-
-        .dot-podcast {
-            background-color: #38bdf8;
-        }
-
-        .dot-coming {
-            background-color: #ddd6fe;
-        }
-
-        .btn-coming {
-            color: #ffffff;
-            background-color: #8b5cf6;
-            border-color: #8b5cf6;
-            box-shadow: 0 3px 12px rgba(139, 92, 246, 0.18);
-        }
-
-        .btn-coming:hover {
-            background-color: #7c3aed;
-            border-color: #7c3aed;
-            box-shadow: 0 5px 18px rgba(139, 92, 246, 0.26);
-        }
-
-        .btn-coming:focus-visible {
-            outline-color: #8b5cf6;
-        }
-
-        /* Night-only text glow, glass buttons, and glowing dots. */
-        :root[data-theme="night"] .container {
-            max-width: 680px;
-        }
-
-        :root[data-theme="night"] h1 {
-            text-shadow: 0 0 38px rgba(79, 154, 244, 0.16);
-        }
-
-        :root[data-theme="night"] p {
-            font-size: 1.15rem;
-        }
-
-        :root[data-theme="night"] .btn {
-            padding: 0.875rem 1.55rem;
-            font-size: 0.98rem;
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.12),
-                inset 0 1px rgba(255, 255, 255, 0.035);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        :root[data-theme="night"] .btn:hover {
-            border-color: rgba(119, 187, 250, 0.48);
-            box-shadow:
-                0 7px 24px rgba(0, 0, 0, 0.2),
-                0 0 18px rgba(71, 155, 255, 0.10);
-        }
-
-        :root[data-theme="night"] .btn:focus-visible {
-            outline-color: #73c9ff;
-        }
-
-        :root[data-theme="night"] .dot {
-            width: 9px;
-            height: 9px;
-        }
-
-        :root[data-theme="night"] .dot-friendmail {
-            background-color: #559eff;
-            box-shadow: 0 0 9px #559eff;
-        }
-
-        :root[data-theme="night"] .dot-secret {
-            background-color: #ec71bc;
-            box-shadow: 0 0 9px #ec71bc;
-        }
-
-        :root[data-theme="night"] .dot-podcast {
-            background-color: #45d4f8;
-            box-shadow: 0 0 9px #45d4f8;
-        }
-
-        :root[data-theme="night"] .dot-coming {
-            background-color: #d8b4fe;
-            box-shadow: 0 0 9px #c084fc;
-        }
-
-        :root[data-theme="night"] .btn-coming {
-            color: #f6eaff;
-            background: rgba(101, 53, 158, 0.65);
-            border-color: rgba(196, 135, 255, 0.55);
-            box-shadow: 0 5px 22px rgba(93, 47, 157, 0.22);
-        }
-
-        :root[data-theme="night"] .btn-coming:hover {
-            background: rgba(123, 67, 190, 0.82);
-            border-color: #c69afa;
-            box-shadow: 0 7px 26px rgba(127, 68, 210, 0.30);
-        }
-
-        /* A quiet, blue terminal behind the content; night-only. */
-        .terminal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-            text-align: left;
-            font-family:
-                "SFMono-Regular",
-                Consolas,
-                "Liberation Mono",
-                monospace;
-        }
-
-        :root[data-theme="night"] .terminal-bg {
-            display: block;
-        }
-
-        .terminal-window {
-            position: absolute;
-            top: clamp(2.5rem, 9vh, 6.5rem);
-            left: clamp(1.25rem, 5vw, 5.5rem);
-            width: min(440px, calc(100vw - 2.5rem));
-            height: 246px;
-            border: 1px solid rgba(69, 147, 229, 0.16);
-            border-radius: 10px;
-            background: rgba(6, 20, 42, 0.24);
-            box-shadow: 0 0 60px rgba(48, 126, 225, 0.05);
-            opacity: 0.47;
-            transform: rotate(-0.75deg);
-        }
-
-        .terminal-heading {
-            padding: 11px 16px;
-            border-bottom: 1px solid rgba(69, 147, 229, 0.16);
-            color: #85bbf7;
-            font-size: 0.7rem;
-            letter-spacing: 0.02em;
-        }
-
-        .terminal-heading::before {
-            content: "●  ●  ●";
-            color: #407db9;
-            margin-right: 14px;
-            letter-spacing: 0.23em;
-        }
-
-        .terminal-output {
-            padding: 12px 17px 20px;
-            color: #7fc6ff;
-            font-size: 0.78rem;
-            line-height: 1.8;
-            overflow: hidden;
-            height: 206px;
-        }
-
-        .terminal-line {
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .terminal-line.typing::after {
-            content: "▌";
-            color: #a5dbff;
-            animation: cursorBlink 0.8s step-end infinite;
-        }
-
-        @keyframes cursorBlink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .terminal-window {
-                top: 1.5rem;
-                opacity: 0.33;
-            }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .container {
-                animation: none;
-                opacity: 1;
-                transform: none;
-            }
-
-            .btn {
-                transition: none;
-            }
-
-            .terminal-line.typing::after {
-                animation: none;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fafafa">
+<title>timothyandkyler.devs.surf</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<script>
+function updateTheme(){
+ const hour=new Date().getHours(), theme=hour>=7&&hour<19?'day':'night';
+ const old=document.documentElement.dataset.theme;
+ document.documentElement.dataset.theme=theme;
+ document.querySelector('meta[name="theme-color"]').content=theme==='day'?'#fafafa':'#080d19';
+ if(old!==theme) document.dispatchEvent(new Event('themechange'));
+}
+updateTheme(); setInterval(updateTheme,30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateTheme()});
+</script>
+<style>
+:root{color-scheme:light;--bg:#f7f9fc;--ink:#111827;--muted:#64748b;--surface:rgba(255,255,255,.76);--line:#e4e9f1;--accent:#2563eb;--shadow:0 24px 80px rgba(20,40,80,.09)}
+:root[data-theme=night]{color-scheme:dark;--bg:#070b14;--ink:#eef5ff;--muted:#91a2bd;--surface:rgba(13,22,38,.72);--line:rgba(139,177,223,.16);--accent:#72b6ff;--shadow:0 24px 80px rgba(0,0,0,.32)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:40px 22px;color:var(--ink);background:var(--bg);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden;isolation:isolate}
+:root[data-theme=night] body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse 50% 44% at 50% 43%,rgba(37,97,159,.22),transparent 85%),radial-gradient(circle at 88% 12%,rgba(82,55,135,.13),transparent 40%),linear-gradient(rgba(128,178,232,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(128,178,232,.045) 1px,transparent 1px);background-size:auto,auto,42px 42px,42px 42px}
+:root[data-theme=night] body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 22%,rgba(4,8,17,.5) 100%)}
+main{width:min(100%,940px);position:relative;z-index:2;animation:appear .7s ease both}
+.hero{text-align:center;margin:0 auto 30px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);padding:8px 13px;border-radius:99px;font-size:.78rem;color:var(--muted);letter-spacing:.04em;margin-bottom:18px;backdrop-filter:blur(14px)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;animation:pulse 2s infinite}
+h1{font-size:clamp(2rem,6vw,4rem);letter-spacing:-.065em;line-height:1.06;margin:0;font-weight:850;overflow-wrap:anywhere}
+.gradient{background:linear-gradient(110deg,#2563eb,#8b5cf6 52%,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-theme=night] .gradient{background-image:linear-gradient(110deg,#8bc8ff,#b5a1ff 52%,#5de4ef)}
+.subtitle{color:var(--muted);font-size:clamp(1rem,2.4vw,1.2rem);margin:15px 0 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{position:relative;display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px;background:var(--surface);backdrop-filter:blur(18px);box-shadow:var(--shadow);transition:transform .22s,border-color .22s,box-shadow .22s;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 0% 0%,rgba(59,130,246,.09),transparent 65%);opacity:0;transition:opacity .22s}
+.card:hover{transform:translateY(-4px);border-color:rgba(100,160,245,.45);box-shadow:0 22px 60px rgba(35,85,160,.13)}
+.card:hover::after{opacity:1}
+.iconbox{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto;font-size:1.35rem;background:rgba(59,130,246,.12)}
+.card:nth-child(2) .iconbox{background:rgba(6,182,212,.12)}
+.card:nth-child(3) .iconbox{background:rgba(236,72,153,.12)}
+.card:nth-child(4) .iconbox{background:rgba(139,92,246,.13)}
+.card-text{text-align:left;min-width:0}
+.card-title{font-weight:750;font-size:1.05rem;letter-spacing:-.02em}
+.card-desc{color:var(--muted);font-size:.87rem;margin-top:5px;line-height:1.45}
+.arrow{margin-left:auto;color:var(--muted);font-size:1.15rem;transition:transform .2s}
+.card:hover .arrow{transform:translateX(4px);color:var(--accent)}
+.coming{cursor:default}
+.coming .arrow{display:none}
+.section-label{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin:34px 0 12px}
+.section-label::after{content:"";height:1px;background:var(--line);flex:1}
+.interactive-terminal{border:1px solid var(--line);background:rgba(255,255,255,.83);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);backdrop-filter:blur(20px);text-align:left}
+:root[data-theme=night] .interactive-terminal{background:rgba(7,15,27,.86);border-color:rgba(90,157,234,.24)}
+.term-head{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);gap:10px}
+.term-dots{display:flex;gap:6px}.term-dots i{width:9px;height:9px;border-radius:50%;background:#ff5f57}.term-dots i:nth-child(2){background:#febc2e}.term-dots i:nth-child(3){background:#28c840}
+.term-title{font-family:ui-monospace,Consolas,monospace;color:var(--muted);font-size:.77rem;margin-left:3px}
+.term-status{margin-left:auto;color:#22c55e;font-size:.72rem}
+.term-screen{height:220px;overflow:auto;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem;line-height:1.7;color:#2471b9;scrollbar-width:thin}
+:root[data-theme=night] .term-screen{color:#a6d5ff}
+.term-row{white-space:pre-wrap;overflow-wrap:anywhere}
+.term-row.output{color:var(--muted)}
+.term-row.error{color:#f87171}
+.term-row.good{color:#34d399}
+.term-input-line{display:flex;gap:8px;align-items:center;padding:0 18px 15px;font-family:ui-monospace,Consolas,monospace}
+.prompt{color:#22c55e;white-space:nowrap}
+#commandInput{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;caret-color:var(--accent)}
+.term-hint{padding:0 18px 12px;color:var(--muted);font-size:.72rem}
+.terminal-bg{display:none;position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;text-align:left;font-family:ui-monospace,Consolas,monospace}
+:root[data-theme=night] .terminal-bg{display:block}
+.terminal-window{position:absolute;top:clamp(2.5rem,9vh,6.5rem);left:clamp(1.25rem,5vw,5.5rem);width:min(440px,calc(100vw - 2.5rem));height:246px;border:1px solid rgba(69,147,229,.16);border-radius:10px;background:rgba(6,20,42,.24);box-shadow:0 0 60px rgba(48,126,225,.05);opacity:.47;transform:rotate(-.75deg)}
+.terminal-heading{padding:11px 16px;border-bottom:1px solid rgba(69,147,229,.16);color:#85bbf7;font-size:.7rem}
+.terminal-heading::before{content:"●  ●  ●";color:#407db9;margin-right:14px;letter-spacing:.23em}
+.terminal-output{padding:12px 17px 20px;color:#7fc6ff;font-size:.78rem;line-height:1.8;overflow:hidden;height:206px}
+.terminal-line{white-space:pre-wrap;overflow-wrap:anywhere}
+.terminal-line.typing::after{content:"▌";color:#a5dbff;animation:blink .8s step-end infinite}
+@keyframes blink{50%{opacity:0}}@keyframes pulse{50%{opacity:.45}}@keyframes appear{to{opacity:1;transform:translateY(0)}}
+footer{text-align:center;color:var(--muted);font-size:.76rem;margin-top:24px}
+@media(max-width:650px){body{padding:26px 15px}.cards{grid-template-columns:1fr}.card{padding:18px}.terminal-window{top:1.5rem;opacity:.26}.term-screen{height:190px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-    <div class="terminal-bg" aria-hidden="true">
-        <div class="terminal-window">
-            <div class="terminal-heading">tk@goatnet: ~</div>
-            <div class="terminal-output" id="terminal-output"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <h1>timothyandkyler.devs.surf</h1>
-        <p>the websight for goats</p>
-
-        <div class="button-grid">
-            <a href="/email" class="btn">
-                <span class="dot dot-friendmail"></span>
-                FriendMail
-            </a>
-
-            <a href="/podcast" class="btn">
-                <span class="dot dot-podcast"></span>
-                PodCastaway
-            </a>
-
-            <a href="/secret-webpage" class="btn">
-                <span class="dot dot-secret"></span>
-                Secret Room Chat
-            </a>
-
-            <a href="/3d-realistic-playground" class="btn btn-coming">
-                <span class="dot dot-coming"></span>
-                Coming soon...
-            </a>
-        </div>
-    </div>
-
-    <script>
-        // Occasionally type a playful command. This only runs at night.
-        (() => {
-            const output = document.getElementById('terminal-output');
-            const reducedMotion = window.matchMedia(
-                '(prefers-reduced-motion: reduce)'
-            );
-
-            const messages = [
-                'echo timothyisthegoat',
-                'echo kyleristhegoat',
-                'echo nickisthegoat',
-                'goat_mode --enable',
-                'ping the_goat_network',
-                'echo the website for goats',
-                'status --all-systems-goat',
-                'echo secret goat website at https://timothyandkyler.zivill.com/Exiting-thing/',
-                'echo you just got',
-                'echo Rickrolled',
-                'echo real secret website coming soon'
-            ];
-
-            let timer = null;
-            let line = null;
-            let position = 0;
-            let messageIndex = 0;
-            let currentMessage = '';
-
-            function canAnimate() {
-                return (
-                    document.documentElement.dataset.theme === 'night' &&
-                    !document.hidden &&
-                    !reducedMotion.matches
-                );
-            }
-
-            function addLine(value = '') {
-                const element = document.createElement('div');
-                element.className = 'terminal-line';
-                element.textContent = value;
-                output.appendChild(element);
-
-                while (output.childElementCount > 7) {
-                    output.firstElementChild.remove();
-                }
-
-                return element;
-            }
-
-            function queue(callback, delay) {
-                clearTimeout(timer);
-
-                timer = setTimeout(() => {
-                    timer = null;
-
-                    if (canAnimate()) {
-                        callback();
-                    }
-                }, delay);
-            }
-
-            function typeCharacter() {
-                if (!canAnimate() || !line) return;
-
-                line.textContent =
-                    currentMessage.slice(0, ++position);
-
-                if (position < currentMessage.length) {
-                    queue(
-                        typeCharacter,
-                        55 + Math.random() * 65
-                    );
-                } else {
-                    line.classList.remove('typing');
-                    line = null;
-                    position = 0;
-
-                    queue(
-                        beginMessage,
-                        4500 + Math.random() * 4500
-                    );
-                }
-            }
-
-            function beginMessage() {
-                if (!canAnimate()) return;
-
-                currentMessage =
-                    '$ ' + messages[messageIndex++ % messages.length];
-
-                position = 0;
-                line = addLine();
-                line.classList.add('typing');
-
-                typeCharacter();
-            }
-
-            function syncTerminal() {
-                clearTimeout(timer);
-                timer = null;
-
-                if (!canAnimate()) {
-                    if (line) {
-                        line.classList.remove('typing');
-                        line = null;
-                        position = 0;
-                    }
-
-                    return;
-                }
-
-                // Resume the current partial line where it stopped.
-                if (line) {
-                    line.classList.add('typing');
-                    queue(typeCharacter, 60);
-                    return;
-                }
-
-                if (!output.childElementCount) {
-                    addLine('goatnet terminal [connected]');
-                    addLine('ready for commands_');
-                }
-
-                queue(beginMessage, 2300);
-            }
-
-            document.addEventListener('themechange', syncTerminal);
-            document.addEventListener('visibilitychange', syncTerminal);
-            reducedMotion.addEventListener('change', syncTerminal);
-
-            syncTerminal();
-        })();
-    </script>
+<div class="terminal-bg" aria-hidden="true"><div class="terminal-window"><div class="terminal-heading">tk@goatnet: ~</div><div class="terminal-output" id="terminal-output"></div></div></div>
+<main>
+<header class="hero">
+<div class="eyebrow"><span class="live-dot"></span> GOATNET • ONLINE</div>
+<h1><span class="gradient">timothyandkyler</span><br>devs.surf</h1>
+<p class="subtitle">the websight for goats 🐐</p>
+</header>
+<div class="cards">
+<a href="/email" class="card"><div class="iconbox">✉️</div><div class="card-text"><div class="card-title">FriendMail</div><div class="card-desc">Messages, friends, and inbox stuff.</div></div><span class="arrow">↗</span></a>
+<a href="/podcast" class="card"><div class="iconbox">🎧</div><div class="card-text"><div class="card-title">PodCastaway</div><div class="card-desc">Tune in and listen.</div></div><span class="arrow">↗</span></a>
+<a href="/secret-webpage" class="card"><div class="iconbox">🕵️</div><div class="card-text"><div class="card-title">Secret Room Chat</div><div class="card-desc">A little corner of the internet.</div></div><span class="arrow">↗</span></a>
+<div class="card coming"><div class="iconbox">🪐</div><div class="card-text"><div class="card-title">Coming soon...</div><div class="card-desc">Something new is being built.</div></div></div>
+</div>
+<div class="section-label">Command center</div>
+<section class="interactive-terminal" aria-label="Fake interactive terminal">
+<div class="term-head"><div class="term-dots"><i></i><i></i><i></i></div><span class="term-title">guest@goatnet:~</span><span class="term-status">● SIMULATION</span></div>
+<div class="term-screen" id="termScreen" aria-live="polite"><div class="term-row good">GoatNet shell v2.0 — simulation only</div><div class="term-row output">Type <b>help</b> to see available commands.</div></div>
+<div class="term-input-line"><span class="prompt">guest@goatnet:~$</span><input id="commandInput" autocomplete="off" spellcheck="false" aria-label="Fake terminal command" placeholder="type a command..."></div>
+<div class="term-hint">Try: help, ls, about, whoami, ping, goat, date, clear</div>
+</section>
+<footer>made with questionable amounts of goat energy</footer>
+</main>
+<script>
+(() => {
+ const out=document.getElementById('terminal-output'), reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const messages=['echo timothyisthegoat','echo kyleristhegoat','echo nickisthegoat','goat_mode --enable','ping the_goat_network','echo the website for goats','status --all-systems-goat','echo secret goat website at https://timothyandkyler.zivill.com/Exiting-thing/','echo you just got','echo Rickrolled','echo real secret website coming soon'];
+ let timer=null,line=null,pos=0,index=0,msg='';
+ function can(){return document.documentElement.dataset.theme==='night'&&!document.hidden&&!reduced.matches}
+ function add(v=''){let e=document.createElement('div');e.className='terminal-line';e.textContent=v;out.appendChild(e);while(out.childElementCount>7)out.firstElementChild.remove();return e}
+ function queue(fn,d){clearTimeout(timer);timer=setTimeout(()=>{timer=null;if(can())fn()},d)}
+ function type(){if(!can()||!line)return;line.textContent=msg.slice(0,++pos);if(pos<msg.length)queue(type,55+Math.random()*65);else{line.classList.remove('typing');line=null;pos=0;queue(begin,4500+Math.random()*4500)}}
+ function begin(){if(!can())return;msg='$ '+messages[index++%messages.length];pos=0;line=add();line.classList.add('typing');type()}
+ function sync(){clearTimeout(timer);timer=null;if(!can()){if(line){line.classList.remove('typing');line=null;pos=0}return}if(line){line.classList.add('typing');queue(type,60);return}if(!out.childElementCount){add('goatnet terminal [connected]');add('ready for commands_')}queue(begin,2300)}
+ document.addEventListener('themechange',sync);document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);sync();
+})();
+</script>
+<script>
+(() => {
+ const input=document.getElementById('commandInput'), screen=document.getElementById('termScreen');
+ let history=[],histPos=0;
+ const commands={
+ help:()=>`Available commands:
+  help       show this command list
+  ls         list fake files
+  pwd        show current directory
+  whoami     identify current user
+  about      about GoatNet
+  date       show local date/time
+  echo       repeat text
+  ping       simulate network ping
+  status     system status
+  goat       activate goat mode
+  cowsay    goat-themed message
+  matrix     simulated matrix effect
+  sudo       (pretend) elevated command
+  clear      clear terminal`,
+ ls:()=>`index.html   friendmail/   podcast/   secret-room/   goat.config`,
+ pwd:()=>`/home/guest/goatnet`,
+ whoami:()=>`guest\nRole: honorary goat\nAccess: visitor simulation`,
+ about:()=>`GoatNet is the totally imaginary terminal powering this very real website.\nNo commands are actually executed.`,
+ date:()=>new Date().toString(),
+ status:()=>`[ OK ] website: online\n[ OK ] goat levels: maximum\n[ OK ] terminal: simulation\n[ OK ] server: definitely not a goat`,
+ goat:()=>`🐐 GOAT MODE ACTIVATED\nbaa baa bandwidth increased (not really)`,
+ cowsay:args=>`  ______________________\n< ${args.join(' ')||'you are the goat'} >\n  ----------------------\n         \\  ^__^\n          \\ (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`,
+ matrix:()=>`Wake up, goat...\nThe pasture has you.\nFollow the white rabbit (probably a goat).`,
+ sudo:()=>`Permission denied: you are not the root goat.\nThis is a browser simulation, after all.`,
+ ping:args=>`Pinging ${args[0]||'the_goat_network'}...\nReply: time=${Math.floor(Math.random()*18+4)}ms TTL=64\nReply: time=${Math.floor(Math.random()*18+4)}ms TTL=64\nPackets: Sent = 2, Received = 2, Lost = 0 (0% loss)`,
+ exit:()=>`There is no exit. The goats need you.`
+ };
+ function add(text,cls='output'){const d=document.createElement('div');d.className='term-row '+cls;d.textContent=text;screen.appendChild(d);screen.scrollTop=screen.scrollHeight}
+ function run(raw){let parts=raw.trim().split(/\s+/),cmd=(parts.shift()||'').toLowerCase(),args=parts;if(!cmd)return;
+ add('guest@goatnet:~$ '+raw,'');if(cmd==='clear'){screen.innerHTML='';return}
+ if(cmd==='echo'){add(args.join(' '));return}
+ if(commands[cmd]){let result=commands[cmd](args);if(result!==undefined)add(String(result),cmd==='sudo'?'error':'output');return}
+ if(cmd==='rm'||cmd==='shutdown'||cmd==='reboot'||cmd==='format'){add(`Nice try. '${cmd}' is disabled in this pretend terminal.`, 'error');return}
+ add(`command not found: ${cmd}. Type 'help' for commands.`, 'error')
+ }
+ input.addEventListener('keydown',e=>{
+ if(e.key==='Enter'){let value=input.value;input.value='';history.push(value);histPos=history.length;run(value)}
+ else if(e.key==='ArrowUp'){if(histPos>0){histPos--;input.value=history[histPos];e.preventDefault()}}
+ else if(e.key==='ArrowDown'){if(histPos<history.length){histPos++;input.value=history[histPos]||'';e.preventDefault()}}
+ });
+ screen.addEventListener('click',()=>input.focus());
+})();
+</script>
 </body>
 </html>
